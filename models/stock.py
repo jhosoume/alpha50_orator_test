@@ -2,6 +2,8 @@ from orator import Model
 from config import db
 from orator.orm import has_many
 import numbers
+from models.hourly_quote import HourlyQuote
+from models.daily_quote import DailyQuote
 
 Model.set_connection_resolver(db)
 
@@ -25,7 +27,7 @@ class Stock(Model):
     
     @staticmethod
     def is_valid_ticker(ticker):
-        valid = ticker and ticker.isupper()
+        valid = ticker and ticker.isupper() and len(ticker) < 6
         return True if valid else False
     
     @staticmethod
@@ -42,7 +44,7 @@ class Stock(Model):
 
     @staticmethod
     def is_valid_market_cap(market_cap):
-        valid =  market_cap and isinstance(market_cap, numbers.Number)
+        valid =  market_cap and isinstance(market_cap, numbers.Number) and market_cap > 1
         return True if valid else False
 
     def is_valid(self):
