@@ -5,7 +5,7 @@ from decimal import Decimal
 from models.stock import Stock
 from models.daily_quote import DailyQuote
 
-
+# TODO change to try-except receiving arguments from command line
 BEG = '2016-06-01'
 END = '2016-06-30'
 

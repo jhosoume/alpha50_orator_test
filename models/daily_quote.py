@@ -22,7 +22,10 @@ class DailyQuote(Model):
 
     @staticmethod
     def is_valid_date(date):
-        pass
+        valid = date and isinstance(date, arrow.Arrow) and \
+                date > arrow.get('2008-12-31', 'YYYY-MM-DD').to('PST') and \
+                date < arrow.now()
+        return True if valid else False
 
     def is_valid(self):
         return DailyQuote.is_valid_close_price(self.close_price) and \
