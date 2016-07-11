@@ -15,4 +15,4 @@ class AddNameToStocksTable(Migration):
         Revert the migrations.
         """
         with self.schema.table('stocks') as table:
-            table.drop_columen('name')
+            table.drop_column('name')

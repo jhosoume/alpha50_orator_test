@@ -18,4 +18,4 @@ class CreateHourlyQuotesTable(Migration):
         """
         Revert the migrations.
         """
-        self.schema.drop('houly_quotes')
+        self.schema.drop('hourly_quotes')
