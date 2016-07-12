@@ -7,14 +7,14 @@ from retrying import retry
 import arrow
 from stocks_list import stocks
 from models.stock import Stock 
-from models.hourly_quote import HourlyQuote
+from models.minute_quote import minuteQuote
 
 YAHOO_URL = 'http://finance.yahoo.com/webservice/v1/symbols/{}/quote?format=json&view=detail'
 MAX_ATTEMPS = 25
-INTERVAL = 60000 # in ms
+INTERVAL = 1000 # in ms
 
 @retry(stop_max_attempt_number = MAX_ATTEMPS,
-       wait_random_min = INTERVAL - 10000,
+       wait_random_min = INTERVAL - 50,
        wait_random_max = INTERVAL)
 def reach_url(url):
     return requests.get(url) 
@@ -25,7 +25,7 @@ def get_stocks_real_time(tickers_list):
     stocks_prices = []
     for stock in stocks_list:
         stock = stock['resource']['fields']
-        info = {'datetime': arrow.get(stock['utctime']).to('PST').floor('hour'),
+        info = {'datetime': arrow.get(stock['utctime']).to('PST'),
                 'price': Decimal(stock['price']) } 
         stocks_prices.append({'ticker': stock['symbol'], 'info': info})
     return stocks_prices
@@ -38,7 +38,7 @@ def populate_stock_real_time():
     for stock_price in stocks_prices:
         stock = Stock.where('ticker', stock_price['ticker']).first()
         if stock:
-            stock.hourly_quotes().save(HourlyQuote(stock_price['info']))
+            stock.minute_quotes().save(MinuteQuote(stock_price['info']))
 
 if __name__ == '__main__':
     populate_stock_real_time()
