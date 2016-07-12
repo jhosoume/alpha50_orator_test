@@ -7,7 +7,7 @@ from retrying import retry
 import arrow
 from stocks_list import stocks
 from models.stock import Stock 
-from models.minute_quote import minuteQuote
+from models.minute_quote import MinuteQuote
 
 YAHOO_URL = 'http://finance.yahoo.com/webservice/v1/symbols/{}/quote?format=json&view=detail'
 MAX_ATTEMPS = 25

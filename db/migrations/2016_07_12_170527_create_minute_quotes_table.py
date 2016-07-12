@@ -10,7 +10,7 @@ class CreateMinuteQuotesTable(Migration):
         with self.schema.create('minute_quotes') as table:
             table.increments('id')
             table.float('price')
-            table.date('date')
+            table.datetime('datetime')
             table.integer('stock_id').unsigned()
             table.foreign('stock_id').references('id').on('stocks')
 
