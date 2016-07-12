@@ -2,6 +2,7 @@ from orator import Model
 from config import db
 from orator.orm import has_many
 import numbers
+from models.minute_quote import MinuteQuote
 from models.hourly_quote import HourlyQuote
 from models.daily_quote import DailyQuote
 
@@ -12,6 +13,10 @@ class Stock(Model):
     __fillable__ = ['name', 'sector', 'ticker', 'market_cap']
     __guarded__ = ['id']
     __timestamps__ = False
+
+    @has_many
+    def minute_quotes(self):
+        return MinuteQuote
 
     @has_many
     def hourly_quotes(self):
