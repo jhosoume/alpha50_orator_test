@@ -28,8 +28,9 @@ def get_stock_history(ticker, beg, end):
         prep_history.append(info)
     return prep_history
 
-def populate_single_stock_history():
-    pass
+def populate_single_stock_history(ticker):
+    stock = Stock.where('ticker', ticker).first()
+
     
         #if not stock.daily_quotes().save_many( [ DailyQuote(day)  for day in get_stock_history(stock.ticker, BEG, END) ] )
 def populate_stock_history(beg, end):

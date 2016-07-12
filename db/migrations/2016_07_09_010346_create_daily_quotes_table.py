@@ -13,7 +13,6 @@ class CreateDailyQuotesTable(Migration):
             table.foreign('stock_id').references('id').on('stocks')
             table.date('date')
             table.double('close_price', 15, 8)
-            table.timestamps(use_current=True)
 
     def down(self):
         """

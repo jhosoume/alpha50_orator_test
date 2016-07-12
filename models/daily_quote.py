@@ -10,6 +10,7 @@ class DailyQuote(Model):
 
     __fillable__ = ['date', 'close_price']
     __dates__ = ['date']
+    __timestamps__ = False
 
     @belongs_to
     def stock(self):
