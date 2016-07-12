@@ -11,7 +11,7 @@ class CreateStocksTable(Migration):
             table.increments('id')
             table.text('ticker')
             table.text('sector')
-            table.double('cso', 15, 8)
+            table.float('cso')
 
     def down(self):
         """

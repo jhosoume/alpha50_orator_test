@@ -9,7 +9,7 @@ class CreateHourlyQuotesTable(Migration):
         """
         with self.schema.create('hourly_quotes') as table:
             table.increments('id')
-            table.double('price')
+            table.float('price')
             table.date('date')
             table.integer('stock_id').unsigned()
             table.foreign('stock_id').references('id').on('stocks')

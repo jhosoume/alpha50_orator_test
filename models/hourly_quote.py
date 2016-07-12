@@ -1,6 +1,6 @@
 from orator import Model
 from config import db
-from orator.orm import belongs_to
+from orator.orm import belongs_to, scope
 import numbers
 import arrow
 
@@ -28,6 +28,10 @@ class HourlyQuote(Model):
         valid = price and isinstance(price, numbers.Number)
         return True if valid else False
 
+    @scope
+    def older(self, query):
+        return query.where('datetime', '<', arrow.now().to('PST').replace(days = +5))
+
     def is_valid(self):
         return HourlyQuote.is_valid_price(self.price) and \
                HourlyQuote.is_valid_datetime(self.datetime)
@@ -36,8 +40,8 @@ class HourlyQuote(Model):
         count = HourlyQuote.where_between('datetime', [arrow.now().to('PST').replace(minutes = -30), arrow.now().to('PST').replace(minutes = +30)]).count() 
         return True if (count > 0) else False
 
-    def is_new(self):
-        count = HourlyQuote.where('datetime', arrow.now().to('PST').floor('hour')).count()
+    def has_record(self):
+        count = HourlyQuote.where('stock_id', self.stock_id).where('datetime', self.datetime.datetime).count()
         return True if (count > 0) else False
 
-HourlyQuote.saving(lambda hourly_quote: hourly_quote.is_valid() and hourly_quote.is_new())
+HourlyQuote.saving(lambda hourly_quote: hourly_quote.is_valid() and not hourly_quote.has_record())

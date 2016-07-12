@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from yahoo_finance import Share
 import sys
 import arrow
@@ -31,8 +33,6 @@ def get_stock_history(ticker, beg, end):
 def populate_single_stock_history(ticker):
     stock = Stock.where('ticker', ticker).first()
 
-    
-        #if not stock.daily_quotes().save_many( [ DailyQuote(day)  for day in get_stock_history(stock.ticker, BEG, END) ] )
 def populate_stock_history(beg, end):
     for stock in Stock.all():
         try: 

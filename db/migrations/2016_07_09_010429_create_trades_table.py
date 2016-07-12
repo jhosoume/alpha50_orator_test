@@ -11,9 +11,9 @@ class CreateTradesTable(Migration):
             table.increments('id')
             table.integer('stock_portfolio_id').unsigned()
             table.foreign('stock_portfolio_id').references('id').on('stocks_portfolios') 
-            table.date('date')
+            table.datetime('datetime')
             table.integer('quantity')
-            table.double('price', 15, 8)
+            table.float('price')
             table.timestamps(use_current=True)
 
     def down(self):

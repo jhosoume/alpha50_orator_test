@@ -12,7 +12,7 @@ class CreateDailyQuotesTable(Migration):
             table.integer('stock_id').unsigned()
             table.foreign('stock_id').references('id').on('stocks')
             table.date('date')
-            table.double('close_price', 15, 8)
+            table.float('close_price')
 
     def down(self):
         """

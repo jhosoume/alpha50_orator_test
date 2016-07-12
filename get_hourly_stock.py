@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import requests
 import json
 from decimal import Decimal
@@ -40,5 +42,9 @@ def populate_stock_real_time():
 
 if __name__ == '__main__':
     populate_stock_real_time()
+
+# Set up cron as (it is in EDT time):
+# 10 8-17 * * 1-5
+# PST 5-14
 
 
