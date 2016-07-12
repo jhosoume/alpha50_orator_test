@@ -2,13 +2,23 @@ from yahoo_finance import Share
 import sys
 import arrow
 from decimal import Decimal
+from retrying import retry
 from models.stock import Stock
 from models.daily_quote import DailyQuote
 
-# TODO change to try-except receiving arguments from command line
-BEG = '2016-06-01'
-END = '2016-06-30'
+try:
+    BEG = sys.argv[2]
+except:
+    BEG = '2009-01-01'
 
+try:
+    BEG = sys.argv[3]
+except:
+    END = '2016-07-11'
+
+@retry(stop_max_attempt_number = 10,
+       wait_random_min = 1000,
+       wait_random_max = 2000)
 def get_stock_history(ticker, beg, end):
     history = Share(ticker).get_historical(beg, end)
     prep_history = []
@@ -17,12 +27,27 @@ def get_stock_history(ticker, beg, end):
                 'close_price': Decimal(day['Close'])}
         prep_history.append(info)
     return prep_history
+
+def populate_single_stock_history():
+    pass
     
         #if not stock.daily_quotes().save_many( [ DailyQuote(day)  for day in get_stock_history(stock.ticker, BEG, END) ] )
 def populate_stock_history(beg, end):
     for stock in Stock.all():
-        for day in get_stock_history(stock.ticker, BEG, END):
-            if not stock.daily_quotes().save(DailyQuote(day)):
-                print("ERROR: could not save daily quote for \n {}".format(day))
+        try: 
+            stock_history = get_stock_history(stock.ticker, BEG, END)
+        except:
+            print('ERROR: could not get stock history for \n {}'.format(stock.ticker))
+            print(sys.exc_info())
+            continue
+        for day in stock_history:
+            try:
+                stock_quotes = stock.daily_quotes()
+            except:
+                print('ERROR: could not get stocks for \n {}'.format(stock.ticker))
+                raise sys.exc_info()
+            if not stock_quotes.save(DailyQuote(day)):
+                print('ERROR: could not save daily quote for \n {}'.format(day))
     
-
+if __name__ == '__main__':
+    populate_stock_history(BEG, END)

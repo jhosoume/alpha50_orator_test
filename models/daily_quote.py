@@ -24,11 +24,11 @@ class DailyQuote(Model):
     def is_valid_date(date):
         valid = date and isinstance(date, arrow.Arrow) and \
                 date > arrow.get('2008-12-31', 'YYYY-MM-DD').to('PST') and \
-                date < arrow.now()
+                date < arrow.now().replace(minutes = +5)
         return True if valid else False
 
     def is_valid(self):
         return DailyQuote.is_valid_close_price(self.close_price) and \
                DailyQuote.is_valid_date(self.date)
 
-DailyQuote.creating(lambda daily_quote: daily_quote.is_valid())
+DailyQuote.saving(lambda daily_quote: daily_quote.is_valid())

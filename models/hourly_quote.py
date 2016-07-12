@@ -20,7 +20,7 @@ class HourlyQuote(Model):
     def is_valid_datetime(datetime):
         valid = datetime and isinstance(datetime, arrow.Arrow) and \
             datetime > arrow.get('2008-12-31', 'YYYY-MM-DD').to('PST') and \
-            datetime < arrow.now()
+            datetime < arrow.now().replace(minutes = +5)
         return True if valid else False
 
     @staticmethod
@@ -32,8 +32,12 @@ class HourlyQuote(Model):
         return HourlyQuote.is_valid_price(self.price) and \
                HourlyQuote.is_valid_datetime(self.datetime)
 
+    def is_new_range(self):
+        count = HourlyQuote.where_between('datetime', [arrow.now().to('PST').replace(minutes = -30), arrow.now().to('PST').replace(minutes = +30)]).count() 
+        return True if (count > 0) else False
+
     def is_new(self):
-        pass
+        count = HourlyQuote.where('datetime', arrow.now().to('PST').floor('hour')).count()
+        return True if (count > 0) else False
 
-
-HourlyQuote.creating(lambda hourly_quote: hourly_quote.is_valid())
+HourlyQuote.saving(lambda hourly_quote: hourly_quote.is_valid() and hourly_quote.is_new())
